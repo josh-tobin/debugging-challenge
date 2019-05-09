@@ -22,9 +22,9 @@ def lenet(input, scope='lenet', reuse=False, training=True):
         logits = tf.layers.dense(inputs=dense, units=10)
     return logits
 
-def train(n_epochs, learning_rate, batch_size):
-    train_dataset = MNISTTrain(batch_size)
-    test_dataset = MNISTTest(batch_size)
+def train(n_epochs, learning_rate, batch_size, overfit_batch):
+    train_dataset = MNISTTrain(batch_size, overfit_batch=overfit_batch)
+    test_dataset = MNISTTest(batch_size, overfit_batch=overfit_batch)
     
     x, y = train_dataset.next_batch
     y_pred = lenet(x)
@@ -79,8 +79,9 @@ def train(n_epochs, learning_rate, batch_size):
 @click.option('--n-epochs', type=int, default=5)
 @click.option('--lr', type=float, default=3e-4)
 @click.option('--batch-size', type=int, default=32)
-def main(n_epochs, lr, batch_size):
-    train(n_epochs, lr, batch_size)
+@click.option('--overfit-batch', is_flag=True, default=False)
+def main(n_epochs, lr, batch_size, overfit_batch):
+    train(n_epochs, lr, batch_size, overfit_batch)
 
 if __name__ == '__main__':
     main()

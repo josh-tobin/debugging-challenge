@@ -3,11 +3,14 @@ import tensorflow as tf
 from abc import abstractmethod, ABC
 
 class MNISTDataset(ABC):
-    def __init__(self, batch_size):
+    def __init__(self, batch_size, overfit_batch=False):
         x, y = self.load_raw_data()
         dset = tf.data.Dataset.from_tensor_slices((x, y))
+        if overfit_batch:
+            dset = dset.take(batch_size)
         dset = dset.map(self.preprocess_example)
-        dset = dset.map(self.augment_example)
+        if not overfit_batch:
+            dset = dset.map(self.augment_example)
         dset = dset.shuffle(10000)
         dset = dset.batch(batch_size)
         self.dset = dset 
