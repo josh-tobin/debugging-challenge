@@ -29,7 +29,7 @@ class MNISTDataset(ABC):
         new_image = tf.image.convert_image_dtype(tf.reshape(example[0], [28, 28, 1]),
                                                  tf.float32)
         # Scale to [0, 1) 
-        image = image / 255.
+        new_image = new_image / 255.
         new_label = tf.cast(tf.one_hot(example[1], 10), tf.float32)
         return new_image, new_label
 
