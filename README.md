@@ -61,13 +61,13 @@ You can look at a corrected solution in the git branch called `working`.
 <details>
   <summary>What should training look like?</summary>
   <br>
-  See `assets/training_example.png`
+  See assets/training_example.png
 </details>
 
 <details>
   <summary>Bug 1</summary>
   <br>
-  You need to pass `reuse=True` to the layers for the test network.
+  You need to pass reuse=True to the layers for the test network.
 </details>
 <details>
   <summary>Bug 2</summary>
@@ -84,7 +84,7 @@ You can look at a corrected solution in the git branch called `working`.
 <details>
   <summary>Bug 4</summary>
   <br>
-  Incorrect input scaling. `tf.image.convert_image_dtype` already scales the 
+  Incorrect input scaling. tf.image.convert_image_dtype already scales the 
   values to [0, 1), so we are doing it twice.
 </details>
 <details>
@@ -95,7 +95,7 @@ You can look at a corrected solution in the git branch called `working`.
 <details>
   <summary>Bug 6</summary>
   <br>
-  Not removing augmentation at test time. `augment_example` method should only
+  Not removing augmentation at test time. augment_example method should only
   be used on the training set.
 </details>
 <details>
