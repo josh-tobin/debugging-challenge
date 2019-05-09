@@ -3,8 +3,8 @@ import click
 from dataset import MNISTTrain, MNISTTest
 import numpy as np
 
-def lenet(input, scope='lenet', reuse=False, training=True):
-    with tf.variable_scope(scope, reuse=reuse):
+def lenet(input, scope='lenet'):
+    with tf.variable_scope(scope):
         conv1 = tf.layers.conv2d(inputs=input,
                                  filters=32,
                                  kernel_size=[5, 5],
@@ -16,11 +16,11 @@ def lenet(input, scope='lenet', reuse=False, training=True):
                                  padding='same', activation=tf.nn.relu)
         pool2 = tf.layers.max_pooling2d(inputs=conv2, pool_size=[2, 2], strides=2)
 
-        pool2_flat = tf.reshape(pool2, [-1, 7 * 7 * 64])
+        pool2_flat = tf.reshape(pool2, [-1, 256])
         dense = tf.layers.dense(inputs=pool2_flat, units=512, activation=tf.nn.relu)
-        dropout = tf.layers.dropout(inputs=dense, rate=0.25, training=training)
-        logits = tf.layers.dense(inputs=dense, units=10)
-    return logits
+        dropout = tf.layers.dropout(inputs=dense, rate=0.25)
+        outputs = tf.layers.dense(inputs=dense, units=10, activation=tf.nn.softmax)
+    return outputs
 
 def train(n_epochs, learning_rate, batch_size, overfit_batch):
     train_dataset = MNISTTrain(batch_size, overfit_batch=overfit_batch)
@@ -37,7 +37,7 @@ def train(n_epochs, learning_rate, batch_size, overfit_batch):
     train_op = opt.minimize(train_loss)
 
     x_test, y_test = test_dataset.next_batch
-    y_pred_test = lenet(x_test, reuse=True, training=False)
+    y_pred_test = lenet(x_test)
     test_loss = tf.losses.softmax_cross_entropy(y_test, y_pred_test)
     test_acc = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(y_test, 1),
                                                tf.argmax(y_pred_test, 1)),

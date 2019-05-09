@@ -25,24 +25,18 @@ class MNISTDataset(ABC):
         pass
 
     def preprocess_example(self, *example):
+        # Convert to float
         new_image = tf.image.convert_image_dtype(tf.reshape(example[0], [28, 28, 1]),
                                                  tf.float32)
+        # Scale to [0, 1) 
+        image = image / 255.
         new_label = tf.cast(tf.one_hot(example[1], 10), tf.float32)
         return new_image, new_label
 
     def augment_example(self, *example):
-        # BUG: move train method here
-        return example[0], example[1]
-
-class MNISTTrain(MNISTDataset):
-    def load_raw_data(self):
-        x, y = mnist.load_data()[0]
-        return x, y
-
-    def augment_example(self, *example):
         new_image = example[0]
         rotation = 20
-        crop = 0.9
+        crop = 0.1
 
         transforms = []
         with tf.name_scope('augmentation'):
@@ -51,7 +45,6 @@ class MNISTTrain(MNISTDataset):
             width = tf.cast(width, tf.float32)
             height = tf.cast(height, tf.float32)
 
-            transforms = []
             identity = tf.constant([1, 0, 0, 0, 1, 0, 0, 0], dtype=tf.float32)
 
             if rotation > 0:
@@ -68,6 +61,11 @@ class MNISTTrain(MNISTDataset):
                 new_image = tf.image.resize_images(tf.expand_dims(cropped, 0), [28, 28])[0]
 
         return new_image, example[1]
+
+class MNISTTrain(MNISTDataset):
+    def load_raw_data(self):
+        x, y = mnist.load_data()[0]
+        return x, y
 
 class MNISTTest(MNISTDataset):
     def load_raw_data(self):
