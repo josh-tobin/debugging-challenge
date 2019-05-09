@@ -61,7 +61,7 @@ You can look at a corrected solution in the git branch called `working`.
 <details>
   <summary>What should training look like?</summary>
   <br>
-  ![Training example](assets/training_example.png)
+  See `assets/training_example.png`
 </details>
 
 <details>
